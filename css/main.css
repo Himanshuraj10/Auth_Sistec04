@@ -1,0 +1,534 @@
+/**
+ * TrustChain Verify - Main SaaS Layout & Bento Grid Styling
+ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Prototype Demo Mode Notice Bar */
+.demo-mode-banner {
+  background: linear-gradient(90deg, #4351DB 0%, #5B6CFF 50%, #2DD4BF 100%);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 1000;
+  text-align: center;
+}
+
+.demo-mode-banner a {
+  color: #FFF;
+  text-decoration: underline;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Glassmorphic Navbar */
+.saas-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  height: 72px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+[data-theme="dark"] .saas-navbar {
+  background: rgba(21, 31, 50, 0.85);
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 20px;
+  box-shadow: 0 4px 14px rgba(91, 108, 255, 0.35);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--text-main);
+}
+
+.brand-subtitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-link-item {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-link-item:hover, .nav-link-item.active {
+  color: var(--primary-color);
+}
+
+.nav-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Main Views Container */
+.view-container {
+  flex: 1;
+  display: none;
+}
+.view-container.active {
+  display: block;
+}
+
+/* Landing Page Hero Section */
+.hero-wrapper {
+  padding: 80px 24px 70px;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+}
+
+.hero-glow-blob {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 650px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(91, 108, 255, 0.12) 0%, rgba(45, 212, 191, 0.08) 50%, transparent 70%);
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  background: var(--primary-light);
+  color: var(--primary-color);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  border: 1px solid rgba(91, 108, 255, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-heading {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+  max-width: 860px;
+  margin: 0 auto 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-heading span {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-description {
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 680px;
+  margin: 0 auto 36px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-btn-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+/* Trust Strip */
+.trust-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  margin-top: 48px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.trust-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.trust-badge-item i {
+  color: var(--success-color);
+  font-size: 16px;
+}
+
+/* Bento Grid Section */
+.bento-section {
+  padding: 60px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title-wrap {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.section-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.section-main-heading {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.section-subtext {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.bento-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.bento-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.bento-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(91, 108, 255, 0.3);
+}
+
+.bento-icon-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+  background: var(--primary-light);
+  color: var(--primary-color);
+}
+
+.bento-icon-circle.teal {
+  background: var(--secondary-light);
+  color: var(--secondary-color);
+}
+
+.bento-icon-circle.amber {
+  background: var(--accent-light);
+  color: var(--accent-color);
+}
+
+.bento-icon-circle.green {
+  background: var(--success-light);
+  color: var(--success-color);
+}
+
+.bento-card h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-main);
+}
+
+.bento-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* Portal Layouts (User & Admin) */
+.saas-portal-layout {
+  display: flex;
+  min-height: calc(100vh - 72px);
+}
+
+.saas-sidebar {
+  width: 280px;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: width var(--transition-normal), background-color var(--transition-normal);
+}
+
+.sidebar-user-card {
+  padding: 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-avatar-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--primary-light);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  border: 2px solid var(--primary-color);
+}
+
+.user-meta-info h4 {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.user-meta-info span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.sidebar-nav-list {
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.sidebar-nav-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.sidebar-nav-btn i {
+  font-size: 17px;
+  width: 22px;
+  text-align: center;
+}
+
+.sidebar-nav-btn:hover {
+  background: var(--bg-subtle);
+  color: var(--text-main);
+}
+
+.sidebar-nav-btn.active {
+  background: var(--primary-light);
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .sidebar-nav-btn.active {
+  background: rgba(91, 108, 255, 0.18);
+  color: #8B98FF;
+}
+
+.saas-portal-main {
+  flex: 1;
+  padding: 36px 40px;
+  background: var(--bg-main);
+  overflow-y: auto;
+}
+
+.portal-tab-panel {
+  display: none;
+}
+.portal-tab-panel.active {
+  display: block;
+}
+
+/* Top Page Header inside Portals */
+.portal-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.portal-view-header h2 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.portal-view-header p {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* Footer */
+.saas-footer {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  padding: 48px 32px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+/* Mobile Bottom Nav */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  padding: 8px 16px;
+  z-index: 99;
+  justify-content: space-around;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hero-heading { font-size: 40px; }
+  .bento-grid-3, .bento-grid-4 { grid-template-columns: 1fr; }
+  .saas-portal-layout { flex-direction: column; }
+  .saas-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); }
+  .saas-portal-main { padding: 24px 16px; }
+  .saas-navbar { padding: 0 16px; }
+}
+
+@media (max-width: 768px) {
+  .hero-heading { font-size: 32px; }
+  .hero-description { font-size: 16px; }
+  .nav-menu { display: none; }
+  .mobile-bottom-nav { display: flex; }
+}

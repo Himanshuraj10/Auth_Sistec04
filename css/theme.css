@@ -1,0 +1,85 @@
+/**
+ * TrustChain Verify - Dynamic 2025 SaaS Theme System
+ * All variables can be live-edited from the Admin Panel via siteConfig
+ */
+
+:root {
+  /* Core Brand Colors */
+  --primary-color: #5B6CFF;
+  --primary-light: #EEF0FF;
+  --primary-dark: #4351DB;
+  --secondary-color: #2DD4BF;
+  --secondary-light: #E6FAF8;
+  --accent-color: #FFB86B;
+  --accent-light: #FFF5EA;
+
+  /* Status Colors with Soft Tint Backgrounds */
+  --success-color: #22C55E;
+  --success-light: #DCFCE7;
+  --warning-color: #F59E0B;
+  --warning-light: #FEF3C7;
+  --danger-color: #EF4444;
+  --danger-light: #FEE2E2;
+  --info-color: #38BDF8;
+  --info-light: #E0F2FE;
+
+  /* Background & Surfaces */
+  --bg-main: #F7F9FC;
+  --bg-card: #FFFFFF;
+  --bg-subtle: #F1F4F9;
+  --bg-hover: #E8EDF5;
+  --border-color: #E2E8F0;
+  --border-light: #EDF2F7;
+
+  /* Typography */
+  --text-main: #0F172A;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+  --font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Corner Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* Soft Layered Shadows */
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.05), 0 2px 4px rgba(15, 23, 42, 0.02);
+  --shadow-card: 0 10px 30px rgba(91, 108, 255, 0.06), 0 2px 8px rgba(15, 23, 42, 0.03);
+  --shadow-hover: 0 20px 40px rgba(91, 108, 255, 0.12), 0 4px 12px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 20px 35px rgba(15, 23, 42, 0.08);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Polished Dark Mode */
+[data-theme="dark"] {
+  --bg-main: #0B1120;
+  --bg-card: #151F32;
+  --bg-subtle: #1E293B;
+  --bg-hover: #26354D;
+  --border-color: #243048;
+  --border-light: #1D283A;
+
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+  --text-light: #64748B;
+
+  --primary-light: rgba(91, 108, 255, 0.15);
+  --secondary-light: rgba(45, 212, 191, 0.15);
+  --accent-light: rgba(255, 184, 107, 0.15);
+  --success-light: rgba(34, 197, 94, 0.15);
+  --warning-light: rgba(245, 158, 11, 0.15);
+  --danger-light: rgba(239, 68, 68, 0.15);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --shadow-hover: 0 20px 40px rgba(91, 108, 255, 0.2);
+}

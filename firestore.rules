@@ -1,0 +1,75 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner() {
+      return isAuthenticated() && request.auth.token.email.lower() == "owner@demo.in".lower();
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    function isAdmin() {
+      return isOwner() || (isAuthenticated() && (
+        getUserData().role == 'ADMIN' || getUserData().role == 'OWNER'
+      ));
+    }
+    
+    // Site configuration (all public text, theme, branding)
+    match /siteConfig/{docId} {
+      allow read: if true; // Publicly accessible to hydrate the website
+      allow write: if isAdmin();
+    }
+    
+    // Registered users and role permissions
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      // Users can update their own lastLoginAt or displayName, but CANNOT escalate their own role
+      allow update: if isOwner() || isAdmin() || (
+        request.auth.uid == userId && 
+        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'status']))
+      );
+      allow create: if isAuthenticated();
+      allow delete: if isAdmin() && !isOwner();
+    }
+    
+    // Pre-authorized allowlist / pending invites
+    match /preAuthorizedEmails/{emailDoc} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Shared blockchain ledger (blocks, Merkle roots, signatures)
+    match /blockchain/{docId} {
+      allow read: if true; // Anyone can inspect the public ledger
+      allow create, update: if isAuthenticated(); // Authenticated users can append mined blocks
+      allow delete: if isOwner(); // Only owner can reset during maintenance
+    }
+    
+    // Verification records and cryptographic proofs
+    match /verifications/{receiptId} {
+      allow read: if true; // Public receipt verification
+      allow create: if isAuthenticated();
+      allow update: if isAdmin(); // Admins approving/overriding cases
+      allow delete: if isAdmin();
+    }
+    
+    // Immutable audit logs
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated(); // Log events from client actions
+      allow update, delete: if false; // Immutable
+    }
+    
+    // Authoritative simulated registries (NSDL, UIDAI, University)
+    match /registries/{registryId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,539 @@
+/**
+ * TrustChain Verify - Modern UI Components
+ */
+
+/* Modern SaaS Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 22px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  line-height: 1;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(91, 108, 255, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(91, 108, 255, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #0D9488 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(45, 212, 191, 0.3);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(45, 212, 191, 0.4);
+}
+
+.btn-outline {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: var(--bg-subtle);
+  border-color: var(--text-light);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--bg-subtle);
+  color: var(--text-main);
+}
+
+.btn-danger {
+  background: var(--danger-color);
+  color: #FFF;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #DC2626;
+  transform: translateY(-1px);
+}
+
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-lg {
+  padding: 16px 28px;
+  font-size: 16px;
+  border-radius: var(--radius-md);
+}
+
+/* Pills & Badges */
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pill-badge.primary { background: var(--primary-light); color: var(--primary-color); }
+.pill-badge.success { background: var(--success-light); color: var(--success-color); }
+.pill-badge.warning { background: var(--warning-light); color: var(--warning-color); }
+.pill-badge.danger { background: var(--danger-light); color: var(--danger-color); }
+.pill-badge.neutral { background: var(--bg-subtle); color: var(--text-muted); }
+
+/* Floating Guided Tour Floating Button */
+.floating-guide-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: #FFFFFF;
+  padding: 14px 22px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 10px 25px rgba(91, 108, 255, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  z-index: 990;
+  border: none;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.floating-guide-fab:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 30px rgba(91, 108, 255, 0.5);
+}
+
+/* Pipeline Progress Stepper */
+.stepper-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 32px;
+}
+
+.stepper-flow {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 12px;
+  position: relative;
+}
+
+.step-card-node {
+  text-align: center;
+  position: relative;
+}
+
+.step-bubble {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-subtle);
+  border: 2px solid var(--border-color);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  font-size: 15px;
+  font-weight: 700;
+  transition: all var(--transition-normal);
+}
+
+.step-card-node.active .step-bubble {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #FFFFFF;
+  box-shadow: 0 0 0 5px var(--primary-light);
+  animation: pulseNode 1.4s infinite;
+}
+
+.step-card-node.completed .step-bubble {
+  background: var(--success-color);
+  border-color: var(--success-color);
+  color: #FFFFFF;
+}
+
+.step-card-node.failed .step-bubble {
+  background: var(--danger-color);
+  border-color: var(--danger-color);
+  color: #FFFFFF;
+}
+
+.step-name-text {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-main);
+}
+
+.step-duration-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+@keyframes pulseNode {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Semi-circular Risk Score Dial Gauge */
+.risk-dial-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.gauge-svg-element {
+  width: 200px;
+  height: 120px;
+}
+
+/* ELA Forensic Heatmap Split Viewer */
+.forensic-viewer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 18px;
+}
+
+.canvas-frame-box {
+  background: #0B1120;
+  border-radius: var(--radius-md);
+  padding: 12px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+}
+
+.canvas-frame-box canvas, .canvas-frame-box img {
+  max-width: 100%;
+  height: auto;
+  max-height: 280px;
+  border-radius: var(--radius-sm);
+  display: block;
+  margin: 0 auto;
+}
+
+.canvas-frame-caption {
+  font-size: 12px;
+  color: #94A3B8;
+  margin-bottom: 8px;
+  display: block;
+  font-weight: 600;
+}
+
+/* TrustSeal Verification Certificate Receipt */
+.trustseal-receipt-card {
+  background: #FFFFFF;
+  color: #0F172A;
+  border: 2px solid var(--primary-color);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  max-width: 760px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.receipt-watermark-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  font-size: 72px;
+  font-weight: 900;
+  color: rgba(91, 108, 255, 0.04);
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: 0.1em;
+}
+
+.receipt-top-banner {
+  text-align: center;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.receipt-data-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 28px;
+  align-items: center;
+}
+
+/* Data Tables */
+.saas-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.saas-table th {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  font-weight: 700;
+  text-align: left;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.saas-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.saas-table tbody tr:hover {
+  background: var(--bg-subtle);
+}
+
+/* Modals */
+.saas-modal-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.saas-modal-backdrop.active {
+  display: flex;
+}
+
+.saas-modal-window {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  max-width: 640px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  animation: modalEnter 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.saas-modal-header {
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.saas-modal-header h3 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.saas-modal-body {
+  padding: 28px;
+  flex: 1;
+}
+
+.saas-modal-footer {
+  padding: 20px 28px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+@keyframes modalEnter {
+  from { opacity: 0; transform: scale(0.96) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Toast Notifications */
+.saas-toast-stack {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.saas-toast {
+  pointer-events: auto;
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary-color);
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 300px;
+  max-width: 420px;
+  font-size: 14px;
+  font-weight: 600;
+  animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.saas-toast.success { border-left-color: var(--success-color); }
+.saas-toast.error { border-left-color: var(--danger-color); }
+.saas-toast.warning { border-left-color: var(--warning-color); }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Empty States */
+.saas-empty-box {
+  padding: 54px 24px;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  margin: 16px 0;
+}
+
+.saas-empty-icon {
+  font-size: 48px;
+  color: var(--text-light);
+  margin-bottom: 16px;
+  display: inline-block;
+}
+
+/* FAQ Accordion */
+.faq-list-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-item-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.faq-item-card:hover {
+  border-color: var(--primary-color);
+}
+
+.faq-question-title {
+  font-size: 17px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.faq-answer-text {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-top: 12px;
+  line-height: 1.6;
+  display: none;
+}
+
+.faq-item-card.open .faq-answer-text {
+  display: block;
+}
+
+/* Technical Details Collapsible Drawer */
+.tech-details-container {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  border-top: 1px solid var(--border-color);
+  padding-top: 40px;
+}
+
+.tech-drawer-header {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Print Formatting for Certificate */
+@media print {
+  body * { visibility: hidden; }
+  .demo-mode-banner, .saas-navbar, .saas-sidebar, .floating-guide-fab, .btn, .no-print {
+    display: none !important;
+  }
+  #printable-receipt-area, #printable-receipt-area * {
+    visibility: visible;
+  }
+  #printable-receipt-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+}

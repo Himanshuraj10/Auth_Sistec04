@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title class="app-title-text">TrustChain Verify - Government Document Verification</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <!-- Third-Party CDNs (Chart.js, QRCode, Tesseract) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <!-- Firebase Web SDK (v10 compat for zero-build HTML) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <!-- Demo Mode Banner -->
+  <div class="demo-mode-banner">
+    <span><i class="fa-solid fa-sparkles"></i> SISTec Hackathon 2026 Demo • Running on Web Crypto & Multi-Node Blockchain</span>
+    <a onclick="UI.showModal('modal-judge-tour')"><i class="fa-solid fa-play"></i> 3-Min Judge Demo Guide</a>
+  </div>
+
+  <!-- Glassmorphic Top Navbar -->
+  <nav class="saas-navbar">
+    <div class="brand-container" onclick="UI.showView('landing')">
+      <div class="brand-icon">
+        <span class="app-logo-emoji">🛡️</span>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title app-title-text">TrustChain Verify</span>
+        <span class="brand-subtitle org-name-text">GovTech Digital Trust Framework</span>
+      </div>
+    </div>
+
+    <div class="nav-menu">
+      <a class="nav-link-item" onclick="UI.showView('landing')">Home</a>
+      <a class="nav-link-item" onclick="UI.showModal('modal-public-verify')"><i class="fa-solid fa-magnifying-glass"></i> Verify Receipt</a>
+      <a class="nav-link-item" onclick="document.getElementById('section-how-it-works')?.scrollIntoView({behavior: 'smooth'})">How It Works</a>
+      <a class="nav-link-item" onclick="document.getElementById('section-faqs')?.scrollIntoView({behavior: 'smooth'})">FAQs</a>
+      <a class="nav-link-item" onclick="document.getElementById('section-tech-drawer')?.scrollIntoView({behavior: 'smooth'})">Architecture</a>
+    </div>
+
+    <div class="nav-actions-group">
+      <button class="btn btn-sm btn-ghost" onclick="UI.toggleDarkMode()" title="Toggle Dark Mode" style="border-radius: 50%; width: 38px; height: 38px; padding: 0;">
+        <i id="theme-toggle-icon" class="fa-solid fa-moon"></i>
+      </button>
+
+      <div id="navbar-auth-actions">
+        <button class="btn btn-sm btn-outline" onclick="UI.showPublicVerifyModal()">
+          <i class="fa-solid fa-magnifying-glass"></i> Verify Receipt
+        </button>
+        <button class="btn btn-sm btn-primary" onclick="Auth.signInWithGoogle()">
+          <i class="fa-brands fa-google"></i> Sign In
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- VIEW 1: LANDING PAGE -->
+  <!-- ========================================================================= -->
+  <main id="view-landing" class="view-container active">
+    
+    <!-- Hero Section -->
+    <section class="hero-wrapper">
+      <div class="hero-glow-blob"></div>
+      
+      <div class="hero-badge-pill">
+        <i class="fa-solid fa-shield-check"></i>
+        <span id="hero-kicker-text">Ministry of Electronics & IT • Digital Trust Framework</span>
+      </div>
+
+      <h1 class="hero-heading" id="hero-title-text">
+        Check any government document <span>in seconds</span>
+      </h1>
+
+      <p class="hero-description" id="hero-subtitle-text">
+        Upload your PAN card, ID, or certificate. We read it, match it with official records, spot fake or edited documents, and give you a proof that nobody can change.
+      </p>
+
+      <div class="hero-btn-row">
+        <button class="btn btn-primary btn-lg" onclick="Auth.signInWithGoogle()">
+          <i class="fa-brands fa-google"></i>
+          <span id="cta-signin-btn-text">Sign in with Google</span>
+        </button>
+        <button class="btn btn-outline btn-lg" onclick="UI.showPublicVerifyModal()">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span id="cta-verify-btn-text">Verify a Receipt</span>
+        </button>
+        <button class="btn btn-secondary btn-lg" onclick="UI.showModal('modal-judge-tour')">
+          <i class="fa-solid fa-star"></i> Judge Demo Tour
+        </button>
+      </div>
+
+      <!-- Trust Strip -->
+      <div class="trust-strip">
+        <div class="trust-badge-item">
+          <i class="fa-solid fa-bolt"></i> Fast results in 3 seconds
+        </div>
+        <div class="trust-badge-item">
+          <i class="fa-solid fa-shield-halved"></i> Spots fake & edited documents
+        </div>
+        <div class="trust-badge-item">
+          <i class="fa-solid fa-lock"></i> 100% private and secure
+        </div>
+        <div class="trust-badge-item">
+          <i class="fa-solid fa-building-columns"></i> 3 Authoritative Databases
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="section-how-it-works" class="bento-section">
+      <div class="section-title-wrap">
+        <div class="section-kicker">Simple Process</div>
+        <h2 class="section-main-heading">How it works in 3 simple steps</h2>
+        <p class="section-subtext">No complicated steps or long waiting lines.</p>
+      </div>
+
+      <div id="landing-steps-grid" class="bento-grid-3">
+        <!-- Hydrated dynamically from siteConfig -->
+      </div>
+    </section>
+
+    <!-- Why Use It Bento Grid -->
+    <section class="bento-section" style="background: var(--bg-subtle); border-radius: var(--radius-xl);">
+      <div class="section-title-wrap">
+        <div class="section-kicker">Key Benefits</div>
+        <h2 class="section-main-heading">Why use TrustChain?</h2>
+        <p class="section-subtext">Built to make government document verification fast, safe, and transparent.</p>
+      </div>
+
+      <div id="landing-why-grid" class="bento-grid-4">
+        <!-- Hydrated dynamically from siteConfig -->
+      </div>
+    </section>
+
+    <!-- 1-Sentence Plain-English Blockchain Explanation -->
+    <section class="bento-section">
+      <div class="bento-card" style="background: linear-gradient(135deg, rgba(91, 108, 255, 0.06) 0%, rgba(45, 212, 191, 0.06) 100%); border: 2px dashed rgba(91, 108, 255, 0.3); text-align: center; padding: 40px 32px;">
+        <div class="bento-icon-circle" style="margin: 0 auto 16px;">
+          <i class="fa-solid fa-cube"></i>
+        </div>
+        <h3 style="font-size: 24px; margin-bottom: 12px;">What is blockchain?</h3>
+        <p id="blockchain-sentence-text" style="font-size: 18px; color: var(--text-main); font-weight: 600; max-width: 780px; margin: 0 auto;">
+          It's a permanent digital record book. Once a verification result is written, no one can secretly alter, delete, or fake it.
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQs Section -->
+    <section id="section-faqs" class="bento-section">
+      <div class="section-title-wrap">
+        <div class="section-kicker">Got Questions?</div>
+        <h2 class="section-main-heading">Frequently Asked Questions</h2>
+        <p class="section-subtext">Everything you need to know about our verification system.</p>
+      </div>
+
+      <div id="landing-faq-container" class="faq-list-wrap">
+        <!-- Hydrated dynamically from siteConfig -->
+      </div>
+    </section>
+
+    <!-- Collapsible Technical Architecture Drawer (For Judges & Evaluators) -->
+    <section id="section-tech-drawer" class="bento-section tech-details-container">
+      <div class="tech-drawer-header" onclick="document.getElementById('tech-details-body').style.display = document.getElementById('tech-details-body').style.display === 'block' ? 'none' : 'block'">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div class="brand-icon" style="width: 36px; height: 36px; font-size: 16px;">
+            <i class="fa-solid fa-microchip"></i>
+          </div>
+          <div>
+            <strong style="font-size: 16px;">For Judges & Technical Evaluators</strong>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Click to expand architecture diagram, consensus specs, and crypto algorithms</p>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-down" style="color: var(--primary-color);"></i>
+      </div>
+
+      <div id="tech-details-body" style="display: none; padding-top: 24px;">
+        <div class="bento-grid-3" style="margin-bottom: 24px;">
+          <div class="bento-card">
+            <h4><i class="fa-solid fa-brain" style="color: var(--primary-color);"></i> Machine Learning</h4>
+            <p style="font-size: 13px; margin-top: 8px;">In-browser calibrated Logistic Regression combining 8 forensic features (ELA variance, dHash, OCR discrepancy, rules). Delivers instant Explainable AI (XAI) feature impact.</p>
+          </div>
+          <div class="bento-card">
+            <h4><i class="fa-solid fa-network-wired" style="color: var(--secondary-color);"></i> Blockchain Consensus</h4>
+            <p style="font-size: 13px; margin-top: 8px;">Shared Cloud Firestore ledger with Proof-of-Work (SHA-256 target zeroes), Merkle tree audit paths, and simulated 3-node Byzantine Fault Tolerance (MeitY, NIC, DigiLocker).</p>
+          </div>
+          <div class="bento-card">
+            <h4><i class="fa-solid fa-fingerprint" style="color: var(--accent-color);"></i> Computer Vision Forensics</h4>
+            <p style="font-size: 13px; margin-top: 8px;">Pixel-level Error Level Analysis (ELA 20x turbo heatmap), discrete cosine transform block noise variance, metadata scanner, and 64-bit gradient dHash.</p>
+          </div>
+        </div>
+
+        <div class="bento-card" style="font-family: monospace; font-size: 12px; background: #0B1120; color: #E2E8F0; padding: 20px; border-radius: 12px; overflow-x: auto;">
+          <strong style="color: #38BDF8;"># 8-STAGE VERIFICATION PIPELINE SEQUENCE:</strong><br>
+          [Client File] -> [SHA-256 Digest] -> [Canvas Otsu Binarize] -> [Tesseract.js OCR]<br>
+          &nbsp;&nbsp;-> [Algorithmic Rules: Aadhaar Verhoeff / PAN Surname / Marksheet Arithmetic]<br>
+          &nbsp;&nbsp;-> [Authoritative DB Query: 42 NSDL + 42 UIDAI + 42 University Rolls]<br>
+          &nbsp;&nbsp;-> [Forensics: ELA 20x Heatmap + Noise StdDev + dHash]<br>
+          &nbsp;&nbsp;-> [ML Logistic Regression + XAI Factor Attribution]<br>
+          &nbsp;&nbsp;-> [Mined Blockchain Block + Merkle Proof + ECDSA Signature]<br>
+          &nbsp;&nbsp;-> [AES-GCM 256-bit Dual Storage + Verifiable QR Receipt]
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- VIEW 2: CITIZEN PORTAL -->
+  <!-- ========================================================================= -->
+  <main id="view-citizen" class="view-container">
+    <div class="saas-portal-layout">
+      <!-- Citizen Sidebar -->
+      <aside id="citizen-sidebar" class="saas-sidebar">
+        <div class="sidebar-user-card">
+          <div class="user-avatar-img">JD</div>
+          <div class="user-meta-info">
+            <h4 id="citizen-name-display">Rajesh Sharma</h4>
+            <span>Verified Citizen</span>
+          </div>
+        </div>
+
+        <div class="sidebar-nav-list">
+          <button id="btn-citizen-tab-dashboard" class="sidebar-nav-btn active" onclick="UI.showCitizenTab('dashboard')">
+            <i class="fa-solid fa-chart-pie"></i> Dashboard
+          </button>
+          <button id="btn-citizen-tab-upload" class="sidebar-nav-btn" onclick="UI.showCitizenTab('upload')">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Upload & Verify
+          </button>
+          <button id="btn-citizen-tab-records" class="sidebar-nav-btn" onclick="UI.showCitizenTab('records')">
+            <i class="fa-solid fa-folder-closed"></i> My Verified Records
+          </button>
+          <button id="btn-citizen-tab-privacy" class="sidebar-nav-btn" onclick="UI.showCitizenTab('privacy')">
+            <i class="fa-solid fa-user-shield"></i> Privacy Center
+          </button>
+        </div>
+      </aside>
+
+      <!-- Citizen Main Content -->
+      <div class="saas-portal-main">
+        
+        <!-- Tab: Dashboard -->
+        <div id="citizen-tab-dashboard" class="portal-tab-panel active">
+          <div class="portal-view-header">
+            <div>
+              <h2>Citizen Verification Dashboard</h2>
+              <p>Welcome back. Submit new credentials or inspect your cryptographically sealed receipts.</p>
+            </div>
+            <button class="btn btn-primary" onclick="UI.showCitizenTab('upload')">
+              <i class="fa-solid fa-plus"></i> Verify New Document
+            </button>
+          </div>
+
+          <div class="bento-grid-3" style="margin-bottom: 32px;">
+            <div class="bento-card">
+              <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">TOTAL SUBMISSIONS</span>
+              <h3 id="citizen-stat-total" style="font-size: 36px; margin: 8px 0; color: var(--primary-color);">0</h3>
+              <span style="font-size: 12px; color: var(--text-muted);">Recorded on Blockchain</span>
+            </div>
+            <div class="bento-card">
+              <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">VERIFIED AUTHENTIC</span>
+              <h3 id="citizen-stat-verified" style="font-size: 36px; margin: 8px 0; color: var(--success-color);">0</h3>
+              <span style="font-size: 12px; color: var(--success-color);"><i class="fa-solid fa-check"></i> Sealed with ECDSA</span>
+            </div>
+            <div class="bento-card">
+              <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">DPDP PRIVACY STATUS</span>
+              <h3 style="font-size: 26px; margin: 8px 0; color: var(--secondary-color);">Zero-Knowledge</h3>
+              <span style="font-size: 12px; color: var(--text-muted);">Off-Chain Images Encrypted</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Upload & Verify -->
+        <div id="citizen-tab-upload" class="portal-tab-panel">
+          <div class="portal-view-header">
+            <div>
+              <h2>Upload & Verify Document</h2>
+              <p>Upload a clear photo/PDF or select an instant photorealistic sample template.</p>
+            </div>
+          </div>
+
+          <!-- Sample Generator Quick Bar -->
+          <div class="bento-card" style="margin-bottom: 24px; padding: 20px;">
+            <strong style="font-size: 14px; margin-bottom: 12px; display: block;">
+              <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-color);"></i> Load Test Sample Documents (Instant Demo):
+            </strong>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="btn btn-sm btn-outline" onclick="SampleDocGenerator.loadSample('genuine_pan')">
+                <i class="fa-solid fa-check" style="color: var(--success-color);"></i> Genuine PAN Card
+              </button>
+              <button class="btn btn-sm btn-outline" onclick="SampleDocGenerator.loadSample('genuine_marksheet')">
+                <i class="fa-solid fa-check" style="color: var(--success-color);"></i> Genuine Marksheet
+              </button>
+              <button class="btn btn-sm btn-outline" onclick="SampleDocGenerator.loadSample('tampered_pan')">
+                <i class="fa-solid fa-triangle-exclamation" style="color: var(--danger-color);"></i> Tampered PAN (Splice)
+              </button>
+              <button class="btn btn-sm btn-outline" onclick="SampleDocGenerator.loadSample('forged_marksheet')">
+                <i class="fa-solid fa-triangle-exclamation" style="color: var(--danger-color);"></i> Forged Marksheet (Math Error)
+              </button>
+              <button class="btn btn-sm btn-outline" onclick="SampleDocGenerator.loadSample('ghost_pan')">
+                <i class="fa-solid fa-ghost" style="color: var(--warning-color);"></i> Ghost PAN (Not in DB)
+              </button>
+              <button class="btn btn-sm btn-ghost" onclick="SampleDocGenerator.downloadCurrentCanvas()" title="Download generated PNG">
+                <i class="fa-solid fa-download"></i> Save PNG
+              </button>
+            </div>
+          </div>
+
+          <!-- Document Upload & Options -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px;">
+            <!-- Dropzone -->
+            <div id="doc-upload-dropzone" class="bento-card" style="border: 2px dashed var(--border-color); text-align: center; cursor: pointer; padding: 36px;">
+              <input type="file" id="doc-file-input" accept="image/*,.pdf" style="display: none;">
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size: 42px; color: var(--primary-color); margin-bottom: 12px;"></i>
+              <h4>Drag & drop document image or PDF</h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">Supports JPG, PNG, WEBP, PDF up to 15MB</p>
+            </div>
+
+            <!-- Preview Card -->
+            <div class="bento-card" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 200px;">
+              <canvas id="source-preview-canvas" style="max-width: 100%; max-height: 220px; border-radius: 8px; display: none;"></canvas>
+              <div id="preview-placeholder" style="color: var(--text-muted); font-size: 14px;">
+                <i class="fa-solid fa-image" style="font-size: 32px; color: var(--text-light); margin-bottom: 8px; display: block;"></i>
+                Document preview will appear here
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls row -->
+          <div class="bento-card" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <label style="font-weight: 700; font-size: 14px;">Document Type:</label>
+              <select id="doc-type-select" style="padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); font-weight: 600; font-size: 14px; background: var(--bg-card); color: var(--text-main);">
+                <option value="PAN">Income Tax PAN Card</option>
+                <option value="AADHAAR">UIDAI Aadhaar Card</option>
+                <option value="MARKSHEET">University Degree / Marksheet</option>
+              </select>
+              <span id="doc-type-detected-badge" class="pill-badge primary">PAN</span>
+            </div>
+
+            <button id="btn-start-verification" class="btn btn-primary btn-lg" onclick="VerificationPipeline.run()">
+              <i class="fa-solid fa-play"></i> Run 8-Stage Verification Pipeline
+            </button>
+          </div>
+
+          <!-- 8-Stage Stepper Progress -->
+          <div class="stepper-container">
+            <h4 style="font-size: 15px; margin-bottom: 20px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+              Pipeline Execution Sequence
+            </h4>
+            <div class="stepper-flow">
+              <div id="pipeline-step-1" class="step-card-node">
+                <div class="step-bubble">1</div>
+                <div class="step-name-text">SHA-256 Hash</div>
+                <div class="step-duration-text">Pending</div>
+              </div>
+              <div id="pipeline-step-2" class="step-card-node">
+                <div class="step-bubble">2</div>
+                <div class="step-name-text">OCR Extract</div>
+                <div class="step-duration-text">Pending</div>
+              </div>
+              <div id="pipeline-step-3" class="step-card-node">
+                <div class="step-bubble">3</div>
+                <div class="step-name-text">Rule Check</div>
+                <div class="step-duration-text">Pending</div>
+              </div>
+              <div id="pipeline-step-4" class="step-card-node">
+                <div class="step-bubble">4</div>
+                <div class="step-name-text">DB Match</div>
+                <div class="step-duration-text">Pending</div>
+              </div>
+              <div id="pipeline-step-5" class="step-card-node">
+                <div class="step-bubble">5</div>
+                <div class="step-name-text">ELA Forensics</div>
+                <div class="step-duration-text">Pending</div>
+              </div>
+              <div id="pipeline-step-6" class="step-card-node">
+                <div class="step-bubble">6</div>
+                <div class="step-name-text">ML Risk & XAI</div>
+                <div class="step-duration-text">Pending</div>
+              </div>
+              <div id="pipeline-step-7" class="step-card-node">
+                <div class="step-bubble">7</div>
+                <div class="step-name-text">PoW Chain</div>
+                <div class="step-duration-text">Pending</div>
+              </div>
+              <div id="pipeline-step-8" class="step-card-node">
+                <div class="step-bubble">8</div>
+                <div class="step-name-text">QR Receipt</div>
+                <div class="step-duration-text">Pending</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Verification Results Panel -->
+          <div id="verification-results-panel" style="display: none; margin-top: 32px;">
+            <div class="bento-card" style="border: 2px solid var(--primary-color); margin-bottom: 24px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span id="result-verdict-pill" class="pill-badge success">VERIFIED</span>
+                  <h3 id="result-verdict-title" style="font-size: 22px;">DOCUMENT VERIFIED & AUTHENTIC</h3>
+                </div>
+                <button class="btn btn-sm btn-outline" id="result-receipt-id-link">
+                  <i class="fa-solid fa-receipt"></i> REC-2026-PAN-8941
+                </button>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px; align-items: center;">
+                <div class="risk-dial-wrap">
+                  <span style="font-size: 13px; color: var(--text-muted); font-weight: 700; margin-bottom: 8px;">CALCULATED FRAUD RISK</span>
+                  <div id="result-risk-number" style="font-size: 48px; font-weight: 900; color: var(--primary-color);">4%</div>
+                  <span style="font-size: 12px; color: var(--text-muted);">Calibrated Logistic Regression</span>
+                </div>
+
+                <div>
+                  <h4 style="font-size: 15px; margin-bottom: 8px;">Extracted Information:</h4>
+                  <div id="result-ocr-fields-box" style="background: var(--bg-subtle); padding: 14px; border-radius: 8px; margin-bottom: 14px;"></div>
+
+                  <h4 style="font-size: 15px; margin-bottom: 8px;">Explainable AI (XAI) Attribution:</h4>
+                  <div id="result-xai-factors-box"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ELA Forensic Heatmap Split Viewer -->
+            <div class="bento-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div>
+                  <h4><i class="fa-solid fa-microscope" style="color: var(--primary-color);"></i> Computer Vision Forgery Forensics</h4>
+                  <p style="font-size: 13px; color: var(--text-muted);">Error Level Analysis (ELA 20x turbo heatmap) reveals digital font splices and altered pixels.</p>
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="ForensicsEngine.toggleHeatmapOverlay()">
+                  <i class="fa-solid fa-layer-group"></i> Toggle Blend
+                </button>
+              </div>
+
+              <div class="forensic-viewer-grid">
+                <div class="canvas-frame-box">
+                  <span class="canvas-frame-caption">Source Document</span>
+                  <canvas id="ela-original-canvas"></canvas>
+                </div>
+                <div class="canvas-frame-box">
+                  <span class="canvas-frame-caption">ELA 20x Heatmap (High Variance = Red)</span>
+                  <canvas id="ela-heatmap-canvas"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tab: My Records -->
+        <div id="citizen-tab-records" class="portal-tab-panel">
+          <div class="portal-view-header">
+            <div>
+              <h2>My Cryptographic Records</h2>
+              <p>Permanent on-chain verification receipts stored on the shared blockchain ledger.</p>
+            </div>
+            <button class="btn btn-outline" onclick="StorageEngine.exportCitizenData()">
+              <i class="fa-solid fa-download"></i> Export JSON
+            </button>
+          </div>
+
+          <div id="citizen-records-grid" class="bento-grid-3">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Tab: Privacy Center -->
+        <div id="citizen-tab-privacy" class="portal-tab-panel">
+          <div class="portal-view-header">
+            <div>
+              <h2>Citizen Privacy & Data Protection Center</h2>
+              <p>Compliance with Digital Personal Data Protection (DPDP) Act 2023.</p>
+            </div>
+          </div>
+
+          <div class="bento-card" style="margin-bottom: 24px;">
+            <h3 style="font-size: 20px; margin-bottom: 12px;"><i class="fa-solid fa-shield-halved" style="color: var(--success-color);"></i> Zero-Knowledge & Data Minimization</h3>
+            <p style="font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+              TrustChain Verify strictly adheres to Zero-Knowledge and data minimization principles. 
+              <strong>Your physical identity document is NEVER transmitted to or stored on the public blockchain.</strong>
+              Only a one-way mathematical digest (SHA-256) and validator signatures are committed to the public ledger.
+            </p>
+          </div>
+
+          <div class="bento-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="bento-card">
+              <h4>Right to Data Portability</h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin: 10px 0 16px;">Download a complete cryptographically signed archive of all your verification receipts.</p>
+              <button class="btn btn-outline btn-sm" onclick="StorageEngine.exportCitizenData()">
+                <i class="fa-solid fa-download"></i> Export My Records
+              </button>
+            </div>
+            <div class="bento-card">
+              <h4>Right to Erasure</h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin: 10px 0 16px;">Purge all off-chain encrypted image files from local storage immediately.</p>
+              <button class="btn btn-danger btn-sm" onclick="StorageEngine.deleteOffChainData()">
+                <i class="fa-solid fa-trash"></i> Erase Stored Images
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- VIEW 3: ADMIN AUTHORITY PORTAL -->
+  <!-- ========================================================================= -->
+  <main id="view-admin" class="view-container">
+    <div class="saas-portal-layout">
+      <!-- Admin Sidebar -->
+      <aside id="admin-sidebar" class="saas-sidebar">
+        <div class="sidebar-user-card">
+          <div id="owner-avatar-bubble" class="user-avatar-img">VS</div>
+          <div class="user-meta-info">
+            <h4 id="owner-display-name">Dr. Vikram Sethi</h4>
+            <span id="owner-role-title">Chief Verification Officer</span>
+          </div>
+        </div>
+
+        <div class="sidebar-nav-list">
+          <button id="btn-admin-tab-analytics" class="sidebar-nav-btn active" onclick="UI.showAdminTab('analytics')">
+            <i class="fa-solid fa-chart-line"></i> Analytics Dashboard
+          </button>
+          <button id="btn-admin-tab-queue" class="sidebar-nav-btn" onclick="UI.showAdminTab('queue')">
+            <i class="fa-solid fa-inbox"></i> Review Queue
+          </button>
+          <button id="btn-admin-tab-accessControl" class="sidebar-nav-btn" onclick="UI.showAdminTab('accessControl')">
+            <i class="fa-solid fa-user-gear"></i> Access Control
+          </button>
+          <button id="btn-admin-tab-explorer" class="sidebar-nav-btn" onclick="UI.showAdminTab('explorer')">
+            <i class="fa-solid fa-cubes"></i> Blockchain Explorer
+          </button>
+          <button id="btn-admin-tab-tamper" class="sidebar-nav-btn" onclick="UI.showAdminTab('tamper')">
+            <i class="fa-solid fa-vial-circle-check"></i> Tamper Demo Studio
+          </button>
+          <button id="btn-admin-tab-registries" class="sidebar-nav-btn" onclick="UI.showAdminTab('registries')">
+            <i class="fa-solid fa-database"></i> Authoritative Registries
+          </button>
+          <button id="btn-admin-tab-alerts" class="sidebar-nav-btn" onclick="UI.showAdminTab('alerts')">
+            <i class="fa-solid fa-triangle-exclamation"></i> Fraud & Duplicates
+          </button>
+          <button id="btn-admin-tab-audit" class="sidebar-nav-btn" onclick="UI.showAdminTab('audit')">
+            <i class="fa-solid fa-list-check"></i> Activity & Audit Logs
+          </button>
+          <button id="btn-admin-tab-settings" class="sidebar-nav-btn" onclick="UI.showAdminTab('settings')">
+            <i class="fa-solid fa-sliders"></i> Site Settings & Content
+          </button>
+        </div>
+      </aside>
+
+      <!-- Admin Main Content -->
+      <div class="saas-portal-main">
+        
+        <!-- Tab: Analytics Dashboard -->
+        <div id="admin-tab-analytics" class="portal-tab-panel active">
+          <div class="portal-view-header">
+            <div>
+              <h2 id="admin-panel-title-text">Verifier Authority Console</h2>
+              <p id="admin-welcome-msg-text">Welcome back, Officer. Review pending verification cases and monitor ledger consensus.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-sm btn-outline" onclick="UI.seedDemoSubmissions()">
+                <i class="fa-solid fa-seedling"></i> Populate Demo Data
+              </button>
+              <button class="btn btn-sm btn-ghost" onclick="UI.resetToEmptyState()" style="color: var(--danger-color);">
+                <i class="fa-solid fa-rotate-left"></i> Reset to Empty State
+              </button>
+            </div>
+          </div>
+
+          <div class="bento-grid-4" style="margin-bottom: 32px;">
+            <div class="bento-card">
+              <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">TOTAL SUBMISSIONS</span>
+              <h3 id="stat-total-submissions" style="font-size: 36px; margin: 6px 0; color: var(--primary-color);">0</h3>
+              <span style="font-size: 12px; color: var(--text-muted);">Real-time count</span>
+            </div>
+            <div class="bento-card">
+              <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">VERIFIED AUTHENTIC</span>
+              <h3 id="stat-verified-count" style="font-size: 36px; margin: 6px 0; color: var(--success-color);">0</h3>
+              <span style="font-size: 12px; color: var(--success-color);"><i class="fa-solid fa-check"></i> Sealed</span>
+            </div>
+            <div class="bento-card">
+              <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">FLAGGED SUSPICIOUS</span>
+              <h3 id="stat-suspicious-count" style="font-size: 36px; margin: 6px 0; color: var(--warning-color);">0</h3>
+              <span style="font-size: 12px; color: var(--warning-color);">Needs Review</span>
+            </div>
+            <div class="bento-card">
+              <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">REJECTED FORGERIES</span>
+              <h3 id="stat-rejected-count" style="font-size: 36px; margin: 6px 0; color: var(--danger-color);">0</h3>
+              <span style="font-size: 12px; color: var(--danger-color);">Blocked</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+            <div class="bento-card">
+              <h4 style="margin-bottom: 16px;">Document Verification Volume by Type</h4>
+              <canvas id="chart-volume-canvas" height="140"></canvas>
+            </div>
+            <div class="bento-card">
+              <h4 style="margin-bottom: 16px;">Fraud Risk Distribution</h4>
+              <canvas id="chart-risk-canvas" height="140"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Review Queue -->
+        <div id="admin-tab-queue" class="portal-tab-panel">
+          <div class="portal-view-header">
+            <div>
+              <h2>Officer Review Queue</h2>
+              <p>Manual review for flagged and suspicious verification cases.</p>
+            </div>
+          </div>
+
+          <div class="bento-card" style="padding: 0; overflow-x: auto;">
+            <table class="saas-table">
+              <thead>
+                <tr>
+                  <th>Receipt ID</th>
+                  <th>Type</th>
+                  <th>Citizen Name</th>
+                  <th>Risk Score</th>
+                  <th>Status</th>
+                  <th>Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="review-queue-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab: Access Control -->
+        <div id="admin-tab-accessControl" class="portal-tab-panel">
+          <div class="portal-view-header">
+            <div>
+              <h2>Google Accounts & Access Control</h2>
+              <p>Manage user roles, pre-authorize Google emails in bulk, and configure domain restrictions.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-primary btn-sm" onclick="UI.showModal('modal-preauthorize')">
+                <i class="fa-solid fa-user-plus"></i> Pre-Authorize Emails
+              </button>
+            </div>
+          </div>
+
+          <!-- Registration Mode & Security Settings -->
+          <div class="bento-card" style="margin-bottom: 24px;">
+            <h4 style="margin-bottom: 12px;"><i class="fa-solid fa-shield-halved" style="color: var(--primary-color);"></i> Registration & Account Security Mode</h4>
+            <div style="display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 16px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+                <input type="radio" name="regModeRadio" value="open" onchange="AdminEngine.updateRegistrationMode('open')">
+                Open (Any verified Google account can sign in)
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+                <input type="radio" name="regModeRadio" value="approval" onchange="AdminEngine.updateRegistrationMode('approval')">
+                Approval Required (Accounts pending until Admin approval)
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+                <input type="radio" name="regModeRadio" value="invite" onchange="AdminEngine.updateRegistrationMode('invite')">
+                Invite-Only (Only pre-authorized emails can sign in)
+              </label>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+              <div>
+                <label style="font-size: 12px; font-weight: 700; color: var(--text-muted);">Allowed Domain Allowlist (optional, comma-separated):</label>
+                <input type="text" id="setting-allowed-domains" placeholder="e.g. gov.in, meity.gov.in" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px; font-size: 13px;">
+              </div>
+              <div>
+                <label style="font-size: 12px; font-weight: 700; color: var(--text-muted);">Blocked / Disposable Domains (comma-separated):</label>
+                <input type="text" id="setting-blocked-domains" placeholder="mailinator.com, tempmail.com" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px; font-size: 13px;">
+              </div>
+            </div>
+            <button class="btn btn-sm btn-outline" style="margin-top: 12px;" onclick="AdminEngine.saveAccessDomainsSettings()">
+              <i class="fa-solid fa-save"></i> Save Security Restrictions
+            </button>
+          </div>
+
+          <!-- User Search and Table -->
+          <div class="bento-card" style="padding: 0; overflow-x: auto;">
+            <div style="padding: 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); gap: 12px; flex-wrap: wrap;">
+              <input type="text" id="access-search-input" onkeyup="AdminEngine.renderAccessControl()" placeholder="Search users by email or name..." style="padding: 8px 14px; border-radius: 6px; border: 1px solid var(--border-color); width: 280px; font-size: 13px;">
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-sm btn-outline" onclick="AdminEngine.currentRoleFilter='ALL'; AdminEngine.renderAccessControl();">All</button>
+                <button class="btn btn-sm btn-outline" onclick="AdminEngine.currentRoleFilter='OWNER'; AdminEngine.renderAccessControl();">Owner</button>
+                <button class="btn btn-sm btn-outline" onclick="AdminEngine.currentRoleFilter='ADMIN'; AdminEngine.renderAccessControl();">Admins</button>
+                <button class="btn btn-sm btn-outline" onclick="AdminEngine.currentRoleFilter='USER'; AdminEngine.renderAccessControl();">Users</button>
+              </div>
+            </div>
+
+            <table class="saas-table">
+              <thead>
+                <tr>
+                  <th>Account</th>
+                  <th>Google Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Last Login</th>
+                  <th>Added By</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="access-control-users-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab: Blockchain Explorer -->
+        <div id="admin-tab-explorer" class="portal-tab-panel">
+          <div class="portal-view-header">
+            <div>
+              <h2>Shared Blockchain Ledger Explorer</h2>
+              <p>Cryptographic proof chain committed with SHA-256 Proof-of-Work and Merkle trees.</p>
+            </div>
+            <button class="btn btn-outline" onclick="BlockchainEngine.validateChainInteractive()">
+              <i class="fa-solid fa-check-double"></i> Validate Entire Chain
+            </button>
+          </div>
+
+          <div id="blockchain-blocks-list">
+            <!-- Blocks populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Tab: Tamper Demo Studio -->
+        <div id="admin-tab-tamper" class="portal-tab-panel">
+          <div class="portal-view-header">
+            <div>
+              <h2>Cryptographic Tamper Demonstration Studio</h2>
+              <p>Live visual proof of blockchain tamper-resistance for hackathon evaluators.</p>
+            </div>
+          </div>
+
+          <div class="bento-card" style="margin-bottom: 24px;">
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">
+              Simulate an insider attack modifying a stored verification verdict in Block #1. 
+              The system will recompute SHA-256 chain links and highlight the cryptographic breakage immediately.
+            </p>
+
+            <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+              <button class="btn btn-danger" onclick="BlockchainEngine.simulateTamper(1)">
+                <i class="fa-solid fa-bug"></i> Maliciously Corrupt Block #1
+              </button>
+              <button class="btn btn-primary" onclick="BlockchainEngine.restoreChain()">
+                <i class="fa-solid fa-rotate-left"></i> Restore Genuine Consensus
+              </button>
+            </div>
+          </div>
+
+          <div id="tamper-status-box" style="margin-bottom: 24px;"></div>
+        </div>
+
+        <!-- Tab: Authoritative Registries -->
+        <div id="admin-tab-registries" class="portal-tab-panel">
+          <div class="portal-view-header">
+            <div>
+              <h2>Authoritative Government Registries</h2>
+              <p>Simulated master databases for NSDL PAN, UIDAI Aadhaar, and University Rolls.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-sm btn-outline" onclick="RegistryEngine.exportCurrentRegistryCSV()">
+                <i class="fa-solid fa-file-csv"></i> Export CSV
+              </button>
+              <button class="btn btn-sm btn-primary" onclick="RegistryEngine.showAddRecordModal()">
+                <i class="fa-solid fa-plus"></i> Add Master Record
+              </button>
+            </div>
+          </div>
+
+          <div class="bento-card" style="padding: 0; overflow-x: auto;">
+            <div style="padding: 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); gap: 12px; flex-wrap: wrap;">
+              <div style="display: flex; gap: 8px;">
+                <button id="btn-reg-nsdl" class="btn btn-primary btn-sm" onclick="RegistryEngine.switchTab('nsdl')">NSDL PAN (42)</button>
+                <button id="btn-reg-uidai" class="btn btn-outline btn-sm" onclick="RegistryEngine.switchTab('uidai')">UIDAI Aadhaar (42)</button>
+                <button id="btn-reg-university" class="btn btn-outline btn-sm" onclick="RegistryEngine.switchTab('university')">University Rolls (42)</button>
+              </div>
+              <input type="text" id="registry-search-input" onkeyup="RegistryEngine.filterTable()" placeholder="Search registry records..." style="padding: 8px 14px; border-radius: 6px; border: 1px solid var(--border-color); width: 260px; font-size: 13px;">
+            </div>
+
+            <table class="saas-table">
+              <thead id="registry-thead"></thead>
+              <tbody id="registry-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab: Fraud Alerts -->
+        <div id="admin-tab-alerts" class="portal-tab-panel">
+          <div class="portal-view-header">
+            <div>
+              <h2>Fraud & Duplicate Document Alerts</h2>
+              <p>Real-time notifications of suspicious modifications and template collisions.</p>
+            </div>
+          </div>
+          <div id="alerts-container"></div>
+        </div>
+
+        <!-- Tab: Activity Logs -->
+        <div id="admin-tab-audit" class="portal-tab-panel">
+          <div class="portal-view-header">
+            <div>
+              <h2>Activity & Audit Logs</h2>
+              <p>Append-only audit trail recording logins, verifications, setting edits, and chain events.</p>
+            </div>
+          </div>
+
+          <div class="bento-card" style="padding: 0; overflow-x: auto;">
+            <table class="saas-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Actor</th>
+                  <th>Action</th>
+                  <th>Target</th>
+                  <th>Status</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody id="audit-logs-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab: Site Settings & Content Editor -->
+        <div id="admin-tab-settings" class="portal-tab-panel">
+          <div class="portal-view-header">
+            <div>
+              <h2>Site Settings & Content Editor</h2>
+              <p>Live in-browser CMS. Edit all branding, landing page copy, color themes, and thresholds without touching code.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-sm btn-outline" onclick="SettingsEditor.exportConfigJSON()">
+                <i class="fa-solid fa-download"></i> Export JSON
+              </button>
+              <label class="btn btn-sm btn-outline" style="margin: 0; cursor: pointer;">
+                <i class="fa-solid fa-upload"></i> Import JSON
+                <input type="file" accept=".json" onchange="SettingsEditor.importConfigJSON(event)" style="display: none;">
+              </label>
+              <button class="btn btn-sm btn-ghost" onclick="SettingsEditor.restoreDefaults()" style="color: var(--danger-color);">
+                <i class="fa-solid fa-rotate-left"></i> Restore Defaults
+              </button>
+              <button class="btn btn-sm btn-primary" onclick="SettingsEditor.saveAllSettings()">
+                <i class="fa-solid fa-check"></i> Save & Apply Live
+              </button>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <!-- Group 1: Branding -->
+            <div class="bento-card">
+              <h4 style="margin-bottom: 14px;"><i class="fa-solid fa-id-badge" style="color: var(--primary-color);"></i> Branding & Identity</h4>
+              <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Application Name:</label>
+                  <input type="text" id="set-app-name" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Tagline:</label>
+                  <input type="text" id="set-tagline" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Logo Emoji:</label>
+                  <input type="text" id="set-logo-emoji" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Organization Name:</label>
+                  <input type="text" id="set-org-name" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Footer Text:</label>
+                  <input type="text" id="set-footer-text" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 2: Owner Profile -->
+            <div class="bento-card">
+              <h4 style="margin-bottom: 14px;"><i class="fa-solid fa-user-tie" style="color: var(--primary-color);"></i> Verifier Owner Profile</h4>
+              <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Officer Display Name:</label>
+                  <input type="text" id="set-owner-name" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Role Title:</label>
+                  <input type="text" id="set-owner-role" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Console Title:</label>
+                  <input type="text" id="set-panel-title" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Welcome Message:</label>
+                  <textarea id="set-welcome-msg" rows="3" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 3: Landing Page Copy -->
+            <div class="bento-card" style="grid-column: 1 / -1;">
+              <h4 style="margin-bottom: 14px;"><i class="fa-solid fa-pen-nib" style="color: var(--primary-color);"></i> Landing Page Copy (Simple Plain-English)</h4>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px;">
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Hero Badge / Kicker:</label>
+                  <input type="text" id="set-hero-kicker" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Hero Heading Title:</label>
+                  <input type="text" id="set-hero-title" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div style="grid-column: 1 / -1;">
+                  <label style="font-weight: 700; color: var(--text-muted);">Hero Subtitle / Description:</label>
+                  <textarea id="set-hero-subtitle" rows="2" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;"></textarea>
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">CTA Sign In Label:</label>
+                  <input type="text" id="set-cta-signin" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">CTA Verify Label:</label>
+                  <input type="text" id="set-cta-verify" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div style="grid-column: 1 / -1;">
+                  <label style="font-weight: 700; color: var(--text-muted);">1-Sentence Blockchain Explanation:</label>
+                  <input type="text" id="set-blockchain-sentence" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+              </div>
+
+              <!-- FAQ List Editor -->
+              <div style="margin-top: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <strong style="font-size: 14px;">Landing Page FAQ Questions & Answers:</strong>
+                  <button type="button" class="btn btn-sm btn-outline" onclick="SettingsEditor.addFaqItem()">
+                    <i class="fa-solid fa-plus"></i> Add FAQ
+                  </button>
+                </div>
+                <div id="faq-editor-container"></div>
+              </div>
+            </div>
+
+            <!-- Group 4: Theme & Presets -->
+            <div class="bento-card">
+              <h4 style="margin-bottom: 14px;"><i class="fa-solid fa-palette" style="color: var(--primary-color);"></i> SaaS Theme & Colors</h4>
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 8px;">Theme Presets:</label>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-sm btn-outline" onclick="SettingsEditor.applyPreset('Default')">Default Indigo</button>
+                  <button type="button" class="btn btn-sm btn-outline" onclick="SettingsEditor.applyPreset('Ocean')">Ocean Blue</button>
+                  <button type="button" class="btn btn-sm btn-outline" onclick="SettingsEditor.applyPreset('Forest')">Forest Emerald</button>
+                  <button type="button" class="btn btn-sm btn-outline" onclick="SettingsEditor.applyPreset('Sunset')">Sunset Crimson</button>
+                  <button type="button" class="btn btn-sm btn-outline" onclick="SettingsEditor.applyPreset('Slate')">Slate Minimal</button>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; font-size: 13px;">
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Primary Color:</label>
+                  <input type="color" id="set-primary-color" onchange="SettingsEditor.livePreviewTheme()" style="width: 100%; height: 38px; border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer; margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Secondary Color:</label>
+                  <input type="color" id="set-secondary-color" onchange="SettingsEditor.livePreviewTheme()" style="width: 100%; height: 38px; border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer; margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Accent Color:</label>
+                  <input type="color" id="set-accent-color" onchange="SettingsEditor.livePreviewTheme()" style="width: 100%; height: 38px; border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer; margin-top: 4px;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 5: System Settings & Thresholds -->
+            <div class="bento-card">
+              <h4 style="margin-bottom: 14px;"><i class="fa-solid fa-gauge" style="color: var(--primary-color);"></i> Thresholds & Parameters</h4>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 13px;">
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Auto-Accept Threshold (%):</label>
+                  <input type="number" id="set-accept-threshold" min="5" max="50" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Auto-Reject Threshold (%):</label>
+                  <input type="number" id="set-reject-threshold" min="50" max="95" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">PoW Difficulty (zeroes):</label>
+                  <input type="number" id="set-difficulty" min="1" max="4" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+                <div>
+                  <label style="font-weight: 700; color: var(--text-muted);">Idle Timeout (Minutes):</label>
+                  <input type="number" id="set-timeout-min" min="5" max="60" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 4px;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODALS -->
+  <!-- ========================================================================= -->
+
+  <!-- Modal: Demo Google Sign-In Selection -->
+  <div id="modal-demo-login" class="saas-modal-backdrop">
+    <div class="saas-modal-window">
+      <div class="saas-modal-header">
+        <h3><i class="fa-brands fa-google" style="color: #4285F4;"></i> Google Sign-In (Demo Mode)</h3>
+        <button class="btn btn-ghost btn-sm" onclick="UI.hideModal('modal-demo-login')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="saas-modal-body">
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">
+          Choose an account role to simulate real Google Authentication for testing:
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <button class="btn btn-outline" style="justify-content: flex-start; padding: 14px 18px;" onclick="Auth.quickDemoLogin('owner')">
+            <div class="brand-icon" style="width: 36px; height: 36px; font-size: 14px;"><i class="fa-solid fa-crown"></i></div>
+            <div style="text-align: left;">
+              <strong style="font-size: 14px; display: block;">Super Admin / Owner (<span id="demo-owner-email-tag">owner@demo.in</span>)</strong>
+              <span style="font-size: 12px; color: var(--text-muted);">Full access to Content Editor, Access Control, and Consensus</span>
+            </div>
+          </button>
+
+          <button class="btn btn-outline" style="justify-content: flex-start; padding: 14px 18px;" onclick="Auth.quickDemoLogin('admin')">
+            <div class="brand-icon" style="width: 36px; height: 36px; font-size: 14px; background: #0D9488;"><i class="fa-solid fa-shield"></i></div>
+            <div style="text-align: left;">
+              <strong style="font-size: 14px; display: block;">Verification Officer (admin@demo.in)</strong>
+              <span style="font-size: 12px; color: var(--text-muted);">Review queue, inspect forensic heatmaps, approve/reject</span>
+            </div>
+          </button>
+
+          <button class="btn btn-outline" style="justify-content: flex-start; padding: 14px 18px;" onclick="Auth.quickDemoLogin('user')">
+            <div class="brand-icon" style="width: 36px; height: 36px; font-size: 14px; background: #64748B;"><i class="fa-solid fa-user"></i></div>
+            <div style="text-align: left;">
+              <strong style="font-size: 14px; display: block;">Citizen Applicant (user@demo.in)</strong>
+              <span style="font-size: 12px; color: var(--text-muted);">Upload credentials, receive QR receipts, privacy center</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Public Receipt Verification -->
+  <div id="modal-public-verify" class="saas-modal-backdrop">
+    <div class="saas-modal-window">
+      <div class="saas-modal-header">
+        <h3><i class="fa-solid fa-magnifying-glass" style="color: var(--primary-color);"></i> Verify On-Chain Receipt</h3>
+        <button class="btn btn-ghost btn-sm" onclick="UI.hideModal('modal-public-verify')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="saas-modal-body">
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">
+          Anyone can independently verify a government document receipt without logging in.
+        </p>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+          <input type="text" id="public-receipt-input" placeholder="e.g. REC-2026-PAN-8941" style="flex: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-color); font-family: monospace; font-size: 15px;">
+          <button class="btn btn-primary" onclick="UI.lookupPublicReceipt()">
+            Verify Proof
+          </button>
+        </div>
+
+        <div id="public-verify-result-box" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Pre-Authorize Google Emails -->
+  <div id="modal-preauthorize" class="saas-modal-backdrop">
+    <div class="saas-modal-window">
+      <div class="saas-modal-header">
+        <h3><i class="fa-solid fa-user-plus" style="color: var(--primary-color);"></i> Pre-Authorize Google Accounts</h3>
+        <button class="btn btn-ghost btn-sm" onclick="UI.hideModal('modal-preauthorize')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="AdminEngine.handlePreAuthorizeForm(event)">
+        <div class="saas-modal-body">
+          <div style="margin-bottom: 16px;">
+            <label style="font-size: 13px; font-weight: 700; color: var(--text-muted);">Assign Role:</label>
+            <select id="preauth-role-select" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 6px; font-size: 14px;">
+              <option value="USER">Citizen User</option>
+              <option value="ADMIN">Verification Administrator</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size: 13px; font-weight: 700; color: var(--text-muted);">Google Email Addresses (one per line or comma-separated):</label>
+            <textarea id="preauth-emails-input" rows="4" placeholder="officer1@gmail.com&#10;auditor@digitalgov.in" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 6px; font-size: 13px;"></textarea>
+          </div>
+        </div>
+        <div class="saas-modal-footer">
+          <button type="button" class="btn btn-ghost" onclick="UI.hideModal('modal-preauthorize')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Authorize Accounts</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Official Certificate Receipt (Printable) -->
+  <div id="modal-receipt-view" class="saas-modal-backdrop">
+    <div class="saas-modal-window" style="max-width: 780px;">
+      <div class="saas-modal-header">
+        <h3><i class="fa-solid fa-file-shield" style="color: var(--success-color);"></i> TrustSeal Cryptographic Certificate</h3>
+        <button class="btn btn-ghost btn-sm" onclick="UI.hideModal('modal-receipt-view')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="saas-modal-body" id="printable-receipt-area">
+        <div class="trustseal-receipt-card">
+          <div class="receipt-watermark-bg">VERIFIED</div>
+
+          <div class="receipt-top-banner">
+            <h2 style="font-size: 22px; color: #1E3A8A; letter-spacing: -0.01em;">DEPARTMENT OF DIGITAL GOVERNANCE</h2>
+            <div style="font-size: 12px; color: #64748B; font-weight: 600; text-transform: uppercase;">Official Cryptographic Document Verification Certificate</div>
+          </div>
+
+          <div class="receipt-data-grid">
+            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
+              <div><span style="color: #64748B;">Receipt ID:</span> <strong id="receipt-disp-id" style="font-family: monospace;">REC-2026-PAN-8941</strong></div>
+              <div><span style="color: #64748B;">Document Type:</span> <strong id="receipt-disp-doctype">PAN Card</strong></div>
+              <div><span style="color: #64748B;">Holder Name:</span> <strong id="receipt-disp-name">Rajesh Kumar Sharma</strong></div>
+              <div><span style="color: #64748B;">Status Verdict:</span> <span id="receipt-disp-verdict" class="pill-badge success">VERIFIED</span></div>
+              <div><span style="color: #64748B;">Calculated Risk:</span> <strong id="receipt-disp-risk">4% Risk</strong></div>
+              <div><span style="color: #64748B;">Anchored At:</span> <span id="receipt-disp-timestamp" style="font-size: 12px;">Mon, 22 Sep 2026</span></div>
+              <div style="word-break: break-all; font-family: monospace; font-size: 10px; color: #475569; margin-top: 6px;">
+                <strong>SHA-256 Digest:</strong><br><span id="receipt-disp-hash">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span>
+              </div>
+              <div style="word-break: break-all; font-family: monospace; font-size: 10px; color: #475569;">
+                <strong>ECDSA Signature:</strong><br><span id="receipt-disp-signature">sig_p256_authority...</span>
+              </div>
+            </div>
+
+            <div style="text-align: center;">
+              <div id="receipt-qrcode-box" style="display: inline-block; padding: 10px; background: #FFF; border: 1px solid #CBD5E1; border-radius: 8px;"></div>
+              <span style="font-size: 11px; color: #64748B; display: block; margin-top: 6px;">Scan to Verify On-Chain</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="saas-modal-footer">
+        <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Official Certificate</button>
+        <button class="btn btn-primary" onclick="UI.hideModal('modal-receipt-view')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Case Review Inspection -->
+  <div id="modal-case-review" class="saas-modal-backdrop">
+    <div class="saas-modal-window" style="max-width: 800px;">
+      <div class="saas-modal-header">
+        <h3><i class="fa-solid fa-microscope" style="color: var(--primary-color);"></i> Officer Case Investigation</h3>
+        <button class="btn btn-ghost btn-sm" onclick="UI.hideModal('modal-case-review')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="saas-modal-body">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h4 id="modal-case-receipt-id" style="font-family: monospace;">REC-2026-PAN-9022</h4>
+            <span id="modal-case-type" style="font-size: 12px; color: var(--text-muted);">PAN Card</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <span id="modal-case-verdict-badge" class="pill-badge danger">REJECTED</span>
+            <span id="modal-case-risk" class="pill-badge warning">88% Risk</span>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-subtle); padding: 14px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;">
+          <div><strong>Citizen Name:</strong> <span id="modal-case-name">Vikram Singh Rathore</span></div>
+          <div style="margin-top: 6px; word-break: break-all; font-family: monospace; font-size: 11px;">
+            <strong>SHA-256 Digest:</strong> <span id="modal-case-hash">...</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn btn-success" onclick="UI.adminDecision('APPROVE_MANUAL')">
+            <i class="fa-solid fa-check"></i> Officer Override (Approve)
+          </button>
+          <button class="btn btn-danger" onclick="UI.adminDecision('CONFIRM_REJECT')">
+            <i class="fa-solid fa-ban"></i> Confirm Rejection
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: 3-Minute Judge Guided Demo Tour -->
+  <div id="modal-judge-tour" class="saas-modal-backdrop">
+    <div class="saas-modal-window" style="max-width: 680px;">
+      <div class="saas-modal-header">
+        <h3><i class="fa-solid fa-star" style="color: #F59E0B;"></i> 3-Minute Evaluation Script</h3>
+        <button class="btn btn-ghost btn-sm" onclick="UI.hideModal('modal-judge-tour')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="saas-modal-body" style="font-size: 14px; line-height: 1.7;">
+        <p style="margin-bottom: 14px;">Follow these 4 quick steps to evaluate all criteria of this solution:</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="background: var(--bg-subtle); padding: 14px; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+            <strong>Step 1: Sign in with Demo Google Account</strong>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 0;">Click "Sign in with Google" and choose "Super Admin / Owner" (Dr. Vikram Sethi) or "Citizen Applicant".</p>
+          </div>
+          <div style="background: var(--bg-subtle); padding: 14px; border-radius: 8px; border-left: 4px solid var(--secondary-color);">
+            <strong>Step 2: Run 8-Stage Pipeline with Spliced Document</strong>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 0;">Go to "Upload & Verify", click the sample button <em>"Tampered PAN (Splice)"</em>, then hit "Run 8-Stage Verification Pipeline". Watch the live ELA 20x heatmap detect the altered name!</p>
+          </div>
+          <div style="background: var(--bg-subtle); padding: 14px; border-radius: 8px; border-left: 4px solid var(--accent-color);">
+            <strong>Step 3: Test Ledger Tamper Studio</strong>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 0;">Navigate to "Tamper Demo Studio" in Admin Portal. Click <em>"Maliciously Corrupt Block #1"</em>. Notice the entire chain turning RED due to broken SHA-256 hashes.</p>
+          </div>
+          <div style="background: var(--bg-subtle); padding: 14px; border-radius: 8px; border-left: 4px solid var(--success-color);">
+            <strong>Step 4: Live Content & Theme Customization</strong>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 0;">Go to "Site Settings & Content Editor". Pick a color theme preset (e.g. Ocean Blue or Forest Emerald) and change any headline. Hit "Save & Apply" to see it live without refreshing!</p>
+          </div>
+        </div>
+      </div>
+      <div class="saas-modal-footer">
+        <button class="btn btn-primary" onclick="UI.hideModal('modal-judge-tour'); Auth.signInWithGoogle();">
+          Start Demo Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Judge Demo FAB -->
+  <button class="floating-guide-fab" onclick="UI.showModal('modal-judge-tour')">
+    <i class="fa-solid fa-star"></i> Judge Demo Tour
+  </button>
+
+  <!-- Modern SaaS Footer -->
+  <footer class="saas-footer">
+    <div class="footer-inner">
+      <div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+          <span class="app-logo-emoji">🛡️</span>
+          <strong class="app-title-text" style="color: var(--text-main);">TrustChain Verify</strong>
+        </div>
+        <p class="footer-copyright-text" style="font-size: 13px;">© 2026 TrustChain Verify • Built for Government Document Verification & Digital Trust</p>
+      </div>
+
+      <div style="display: flex; gap: 20px; font-size: 13px;">
+        <a onclick="UI.showCitizenTab('privacy')" style="color: var(--text-muted); cursor: pointer;">Privacy Policy</a>
+        <a onclick="UI.showModal('modal-public-verify')" style="color: var(--text-muted); cursor: pointer;">Public Verifier</a>
+        <a onclick="UI.showModal('modal-judge-tour')" style="color: var(--primary-color); font-weight: 700; cursor: pointer;">Evaluation Guide</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modular Application Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/firebase-service.js"></script>
+  <script src="js/crypto.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/blockchain.js"></script>
+  <script src="js/ocr.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/registry.js"></script>
+  <script src="js/forensics.js"></script>
+  <script src="js/ml.js"></script>
+  <script src="js/samples.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
